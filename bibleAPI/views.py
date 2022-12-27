@@ -151,6 +151,13 @@ def readbibleChapter(request, book, chapter, version):
 @csrf_exempt
 def readbibleVerse(request, book, chapter, verse, version):
     print(f"book: {book}, chapter: {chapter}, verse: {verse}, version: {version}")
+    
+    reference = f"{book} {chapter}:{verse}"
+
+    wholeText = ""
+    translation_id = ""
+    translation_name = ""
+    translation_note = ""
 
     verses = []
 
@@ -160,6 +167,8 @@ def readbibleVerse(request, book, chapter, verse, version):
             "chapter": {"$eq": chapter},
             "verse": {"$eq": verse},
         })
+        translation_id = "krv"
+        translation_name = "Korean Revised Version"
 
     if version == "krv_baptism":
         datas = KRV_Baptism.find({
@@ -167,6 +176,8 @@ def readbibleVerse(request, book, chapter, verse, version):
             "chapter": {"$eq": chapter},
             "verse": {"$eq": verse},
         })
+        translation_id = "krvb"
+        translation_name = "Korean Revised Version: Baptism"
 
     if version == "niv":
         datas = niv.find({
@@ -174,6 +185,8 @@ def readbibleVerse(request, book, chapter, verse, version):
             "chapter": {"$eq": chapter},
             "verse": {"$eq": verse},
         })
+        translation_id = "niv"
+        translation_name = "New International Version"
 
     if version == "kjv":
         datas = kjv.find({
@@ -181,6 +194,8 @@ def readbibleVerse(request, book, chapter, verse, version):
             "chapter": {"$eq": chapter},
             "verse": {"$eq": verse},
         })
+        translation_id = "kjv"
+        translation_name = "King James Version"
 
     if version == "nkjv":
         datas = nkjv.find({
@@ -188,6 +203,8 @@ def readbibleVerse(request, book, chapter, verse, version):
             "chapter": {"$eq": chapter},
             "verse": {"$eq": verse},
         })
+        translation_id = "kjv"
+        translation_name = "King James Version"
 
     if version == "cuv":
         datas = cuv.find({
@@ -195,7 +212,11 @@ def readbibleVerse(request, book, chapter, verse, version):
             "chapter": {"$eq": chapter},
             "verse": {"$eq": verse},
         })
+        translation_id = "cuv"
+        translation_name = "Chinese Union Version"
 
+    wholeText = datas[0]["text"]
+    
     data = {
             "book_id": datas[0]["book_id"], 
             "book_name": datas[0]["book_name"],
@@ -203,5 +224,16 @@ def readbibleVerse(request, book, chapter, verse, version):
             "verse": verse,
             "text": datas[0]["text"]
             }
+
+    verses.append(data)
+
+    data = {
+        "reference": reference,
+        "verses": verses,
+        "text": wholeText,
+        "translation_id": translation_id,
+        "translation_name": translation_name
+    }
+    
 
     return JsonResponse(data)

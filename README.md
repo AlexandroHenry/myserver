@@ -1,5 +1,25 @@
 # myserver
 
+pip3 install django
+pip3 install djangorestframework
+pip3 install dnspython
+pip3 install django-cors-headers
+pip3 install djongo==1.3.6
+pip3 install pymongo==3.12.3
+sudo apt-get install python3.8-dev
+sudo apt-get install gcc
+pip install uwsgi
+pip install numpy
+
+uwsgi --http :80 --module myserver.wsgi
+
+sudo apt-get install nginx
+
+
+
+
+sudo ln -s /etc/nginx/sites-available/myserver.conf /etc/nginx/sites-enabled/
+
 example:
 http://146.56.145.150:80/readbible/Genesis&chapter=1&verse=1&version=cuv
 

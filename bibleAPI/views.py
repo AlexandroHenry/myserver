@@ -14,6 +14,7 @@ niv = db["NIV"]
 kjv = db["KJV"]
 nkjv = db["NKJV"]
 cuv = db["CHIUNL"]
+bookInfo = db["BookInfo"]
 
 @csrf_exempt
 def testAPI(requests):
@@ -234,6 +235,44 @@ def readbibleVerse(request, book, chapter, verse, version):
         "translation_id": translation_id,
         "translation_name": translation_name
     }
-    
 
     return JsonResponse(data)
+
+@csrf_exempt
+def book(request, book):
+
+    
+    datas = bookInfo.find({
+            "english": {"$eq": book},
+        })
+
+    chapter = datas[0]['chapter']
+    english = datas[0]['english']
+    korean = datas[0]['korean']
+    japanese = datas[0]['japanese']
+    french = datas[0]['french']
+    spanish = datas[0]['spanish']
+    chinese = datas[0]['chinese']
+    german = datas[0]['german']
+    russian = datas[0]['russian']
+    greek = datas[0]['greek']
+    hindi = datas[0]['hindi']
+    portuguese = datas[0]['portuguese']
+    
+    data = {
+        "chapter": chapter,
+        "english": english,
+        "korean": korean,
+        "japanese": japanese,
+        "french": french,
+        "spanish": spanish,
+        "chinese": chinese,
+        "german": german,
+        "russian": russian,
+        "greek": greek,
+        "hindi": hindi,
+        "portuguese": portuguese,
+    }
+
+    return JsonResponse(data)
+

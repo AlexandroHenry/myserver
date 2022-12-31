@@ -94,8 +94,8 @@ def readbibleChapter(request, book, chapter, version):
         })
 
     if version == "nkjv":
-        translation_id = "kjv"
-        translation_name = "King James Version"
+        translation_id = "nkjv"
+        translation_name = "New King James Version"
 
         datas = list(nkjv.find({
             "book_name": {"$eq": book},
@@ -276,3 +276,139 @@ def book(request, book):
 
     return JsonResponse(data)
 
+@csrf_exempt
+def searchVerse(request, keyword, version):
+
+    print(keyword)
+    print(type(keyword))
+    verses = []
+
+    keyword = keyword[1:]
+    
+    wholeText = ""
+    translation_id = ""
+    translation_name = ""
+    translation_note = ""
+
+    if version == "krv":
+        translation_id = "krv"
+        translation_name = "Korean Revised Version"
+
+        datas = list(krv.find({
+            'text': {
+                '$regex': keyword
+            }
+        }))
+
+        count = krv.count_documents({
+            'text': {
+                '$regex': keyword
+            }
+        })
+
+        print(count)
+    
+    elif version == "krv_baptism":
+        translation_id = "krvb"
+        translation_name = "Korean Revised Version: Baptism"
+
+        datas = list(KRV_Baptism.find({
+            'text': {
+                '$regex': keyword
+            }
+        }))
+
+        count = KRV_Baptism.count_documents({
+            'text': {
+                '$regex': keyword
+            }
+        })
+    elif version == "niv":
+        translation_id = "niv"
+        translation_name = "New International Version"
+
+        datas = list(niv.find({
+            'text': {
+                '$regex': keyword
+            }
+        }))
+
+        count = niv.count_documents({
+            'text': {
+                '$regex': keyword
+            }
+        })
+    elif version == "kjv":
+        translation_id = "kjv"
+        translation_name = "King James Version"
+
+        datas = list(kjv.find({
+            'text': {
+                '$regex': keyword
+            }
+        }))
+        
+        count = kjv.count_documents({
+            'text': {
+                '$regex': keyword
+            }
+        })
+    elif version == "nkjv":
+        translation_id = "nkjv"
+        translation_name = "New King James Version"
+
+        datas = list(nkjv.find({
+            'text': {
+                '$regex': keyword
+            }
+        }))
+        
+        count = nkjv.count_documents({
+            'text': {
+                '$regex': keyword
+            }
+        })
+    elif version == "cuv":
+        translation_id = "cuv"
+        translation_name = "Chinese Union Version"
+
+        datas = list(cuv.find({
+            'text': {
+                '$regex': keyword
+            }
+        }))
+        
+        count = cuv.count_documents({
+            'text': {
+                '$regex': keyword
+            }
+        })
+
+    for i in range(count):
+        book_id = datas[i]["book_id"]
+        book_name = datas[i]["book_name"]
+        chapter = datas[i]["chapter"]
+        verse = datas[i]["verse"]
+        text = datas[i]["text"]
+
+        data = {
+            "book_id": book_id, 
+            "book_name": book_name,
+            "chapter": chapter,
+            "verse": verse,
+            "text": text
+            }
+
+        verses.append(data)
+
+        wholeText += f"{text}\n"
+
+    data = {
+        "reference": f"result: {keyword}",
+        "verses": verses,
+        "text": wholeText,
+        "translation_id": translation_id,
+        "translation_name": translation_name
+    }
+
+    return JsonResponse(data)
